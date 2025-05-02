@@ -37,7 +37,7 @@ func NewHTTPClientTransport(endpoint string) *HTTPClientTransport {
 	}
 }
 
-// WithHeader adds a header to the request
+// WithClient allows to set a custom HTTP client
 func (t *HTTPClientTransport) WithClient(c HTTPClient) *HTTPClientTransport {
 	t.client = c
 	return t
