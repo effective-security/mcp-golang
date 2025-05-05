@@ -70,7 +70,7 @@ func TestServerListChangedNotifications(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = server.RegisterPrompt("test-prompt", "Test prompt", func(args TestPromptArgs) (*PromptResponse, error) {
+	err = server.RegisterPrompt("test-prompt", "Test prompt", func(ctx context.Context, args TestPromptArgs) (*PromptResponse, error) {
 		return NewPromptResponse("test", NewPromptMessage(NewTextContent("test"), RoleUser)), nil
 	})
 	if err != nil {
@@ -91,7 +91,7 @@ func TestServerListChangedNotifications(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = server.RegisterPrompt("test-prompt", "Test prompt", func(args TestPromptArgs) (*PromptResponse, error) {
+	err = server.RegisterPrompt("test-prompt", "Test prompt", func(ctx context.Context, args TestPromptArgs) (*PromptResponse, error) {
 		return NewPromptResponse("test", NewPromptMessage(NewTextContent("test"), RoleUser)), nil
 	})
 	if err != nil {
