@@ -6,8 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"slices"
 	"sort"
-	"strings"
 
 	"github.com/invopop/jsonschema"
 	"github.com/metoro-io/mcp-golang/internal/datastructures"
@@ -425,42 +425,28 @@ func createWrappedPromptHandler(userHandler any) func(context.Context, baseGetPr
 // }
 // Then we get the jsonschema for the struct where Title is a required field and Description is an optional field
 func createPromptSchemaFromHandler(handler any) *PromptSchema {
-	handlerValue := reflect.ValueOf(handler)
-	handlerType := handlerValue.Type()
-
-	var argumentType reflect.Type
-	if handlerType.NumIn() == 2 {
-		argumentType = handlerType.In(1)
-	} else if handlerType.NumIn() == 1 {
-		argumentType = handlerType.In(0)
-	}
+	inputSchema := createJsonSchemaFromHandler(handler)
 
 	promptSchema := PromptSchema{
-		Arguments: make([]PromptSchemaArgument, argumentType.NumField()),
+		Name:        inputSchema.Title,
+		Description: &inputSchema.Description,
+		Arguments:   make([]PromptSchemaArgument, 0, inputSchema.Properties.Len()),
 	}
 
-	for i := 0; i < argumentType.NumField(); i++ {
-		field := argumentType.Field(i)
-		fieldName := field.Name
-
-		jsonSchemaTags := strings.Split(field.Tag.Get("jsonschema"), ",")
-		var description *string
-		var required = false
-		for _, tag := range jsonSchemaTags {
-			if strings.HasPrefix(tag, "description=") {
-				s := strings.TrimPrefix(tag, "description=")
-				description = &s
-			}
-			if tag == "required" {
-				required = true
-			}
+	for pair := inputSchema.Properties.Oldest(); pair != nil; pair = pair.Next() {
+		arg := PromptSchemaArgument{
+			Name:        pair.Key,
+			Description: &pair.Value.Description,
 		}
-
-		promptSchema.Arguments[i] = PromptSchemaArgument{
-			Name:        fieldName,
-			Description: description,
-			Required:    &required,
+		descr := pair.Value.Description
+		if descr != "" {
+			arg.Description = &descr
 		}
+		required := slices.Contains(inputSchema.Required, pair.Key)
+		if required {
+			arg.Required = &required
+		}
+		promptSchema.Arguments = append(promptSchema.Arguments, arg)
 	}
 	return &promptSchema
 }
@@ -1026,7 +1012,7 @@ var (
 		Anonymous:                  true,
 		AssignAnchor:               false,
 		AllowAdditionalProperties:  true,
-		RequiredFromJSONSchemaTags: true,
+		RequiredFromJSONSchemaTags: false, // either use jsonschema required tags or json omitempty tags
 		DoNotReference:             true,
 		ExpandedStruct:             true,
 		FieldNameTag:               "",
