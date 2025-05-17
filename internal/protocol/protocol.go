@@ -158,6 +158,7 @@ func NewProtocol(options *ProtocolOptions) *Protocol {
 
 	// Set up default handlers
 	p.SetNotificationHandler("notifications/cancelled", p.handleCancelledNotification)
+	p.SetNotificationHandler("notifications/initialized", p.handleInitializedNotification)
 	p.SetNotificationHandler("$/progress", p.handleProgressNotification)
 
 	return p
@@ -320,6 +321,10 @@ func (p *Protocol) handleProgressNotification(notification *transport.BaseJSONRP
 	}
 
 	return nil
+}
+
+func (p *Protocol) handleInitializedNotification(notification *transport.BaseJSONRPCNotification) error {
+	return p.transport.Send(context.Background(), transport.NewBaseMessageResponse(&transport.BaseJSONRPCResponse{}))
 }
 
 func (p *Protocol) handleCancelledNotification(notification *transport.BaseJSONRPCNotification) error {
