@@ -153,10 +153,6 @@ type ToolRetType struct {
 	// A JSON Schema object defining the expected parameters for the tool.
 	InputSchema interface{} `json:"inputSchema" yaml:"inputSchema" mapstructure:"inputSchema"`
 
-	// Parameters is a legacy schema field that is not used in the current version of the protocol.
-	// But it's required by VS Code
-	Parameters any `json:"parameters" yaml:"parameters" mapstructure:"parameters"`
-
 	// The name of the tool.
 	Name string `json:"name" yaml:"name" mapstructure:"name"`
 }

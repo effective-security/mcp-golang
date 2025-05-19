@@ -665,8 +665,6 @@ func (s *Server) handleListTools(ctx context.Context, request *transport.BaseJSO
 			Name:        orderedTools[i].Name,
 			Description: &orderedTools[i].Description,
 			InputSchema: orderedTools[i].ToolInputSchema,
-			// TODO: remove after VS Code is fixed to use recent schema
-			Parameters: orderedTools[i].ToolInputSchema,
 		})
 	}
 
