@@ -29,19 +29,39 @@ type toolResponseSent struct {
 	Error    error
 }
 
+type CallToolResult struct {
+	// This result property is reserved by the protocol to allow clients and servers
+	// to attach additional metadata to their responses.
+	Meta map[string]any `json:"_meta,omitempty" yaml:"_meta,omitempty" mapstructure:"_meta,omitempty"`
+
+	// Content corresponds to the JSON schema field "content".
+	Content []*Content `json:"content" yaml:"content" mapstructure:"content"`
+
+	// Whether the tool call ended in an error.
+	//
+	// If not set, this is assumed to be false (the call was successful).
+	IsError *bool `json:"isError,omitempty" yaml:"isError,omitempty" mapstructure:"isError,omitempty"`
+
+	// NEW in MCP v2025‑06‑18
+	StructuredContent any `json:"structuredContent,omitempty" yaml:"structuredContent,omitempty" mapstructure:"structuredContent,omitempty"`
+}
+
 // Custom JSON marshaling for ToolResponse
 func (c toolResponseSent) MarshalJSON() ([]byte, error) {
 	if c.Error != nil {
 		errorText := c.Error.Error()
 		c.Response = NewToolResponse(NewTextContent(errorText))
 	}
-	return json.Marshal(struct {
-		Content []*Content `json:"content" yaml:"content" mapstructure:"content"`
-		IsError bool       `json:"isError" yaml:"isError" mapstructure:"isError"`
-	}{
-		Content: c.Response.Content,
-		IsError: c.Error != nil,
-	})
+	isError := c.Error != nil
+	r := CallToolResult{
+		Content:           c.Response.Content,
+		StructuredContent: c.Response.StructuredContent,
+		Meta:              c.Response.Meta,
+	}
+	if isError {
+		r.IsError = &isError
+	}
+	return json.Marshal(r)
 }
 
 // Custom JSON marshaling for ToolResponse
@@ -597,7 +617,7 @@ func (s *Server) handleInitialize(ctx context.Context, request *transport.BaseJS
 		Meta:            nil,
 		Capabilities:    s.generateCapabilities(),
 		Instructions:    s.serverInstructions,
-		ProtocolVersion: "2024-11-05",
+		ProtocolVersion: "2025‑06‑18",
 		ServerInfo: implementation{
 			Name:    s.serverName,
 			Version: s.serverVersion,

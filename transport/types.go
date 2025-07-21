@@ -2,7 +2,8 @@ package transport
 
 import (
 	"encoding/json"
-	"errors"
+
+	"github.com/pkg/errors"
 )
 
 type JSONRPCMessage interface{}
@@ -189,7 +190,7 @@ func (m *BaseJsonRpcMessage) MarshalJSON() ([]byte, error) {
 	case BaseMessageTypeJSONRPCErrorType:
 		return json.Marshal(m.JsonRpcError)
 	default:
-		return nil, errors.New("unknown message type, couldn't marshal")
+		return nil, errors.Errorf("failed to marshal: unknown message type: %s", m.Type)
 	}
 }
 
