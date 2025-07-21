@@ -2,10 +2,12 @@
 
 package schema
 
-import "encoding/json"
-import "errors"
-import "fmt"
-import "reflect"
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"reflect"
+)
 
 // Optional annotations for the client. The client can use annotations to inform
 // how objects are used or displayed
@@ -191,6 +193,9 @@ type CallToolResult struct {
 	//
 	// If not set, this is assumed to be false (the call was successful).
 	IsError *bool `json:"isError,omitempty" yaml:"isError,omitempty" mapstructure:"isError,omitempty"`
+
+	// ✅ NEW in MCP v2025‑06‑18
+	StructuredContent map[string]interface{} `json:"structuredContent,omitempty" yaml:"structuredContent,omitempty" mapstructure:"structuredContent,omitempty"`
 }
 
 // Text provided to or from an LLM.
