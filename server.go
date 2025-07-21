@@ -42,7 +42,7 @@ type CallToolResult struct {
 	// If not set, this is assumed to be false (the call was successful).
 	IsError *bool `json:"isError,omitempty" yaml:"isError,omitempty" mapstructure:"isError,omitempty"`
 
-	// NEW in MCP v2025‑06‑18
+	// NEW in MCP v2025-06-18
 	StructuredContent any `json:"structuredContent,omitempty" yaml:"structuredContent,omitempty" mapstructure:"structuredContent,omitempty"`
 }
 
@@ -617,7 +617,7 @@ func (s *Server) handleInitialize(ctx context.Context, request *transport.BaseJS
 		Meta:            nil,
 		Capabilities:    s.generateCapabilities(),
 		Instructions:    s.serverInstructions,
-		ProtocolVersion: "2025‑06‑18",
+		ProtocolVersion: "2025-06-18",
 		ServerInfo: implementation{
 			Name:    s.serverName,
 			Version: s.serverVersion,

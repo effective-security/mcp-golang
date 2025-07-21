@@ -194,7 +194,7 @@ type CallToolResult struct {
 	// If not set, this is assumed to be false (the call was successful).
 	IsError *bool `json:"isError,omitempty" yaml:"isError,omitempty" mapstructure:"isError,omitempty"`
 
-	// ✅ NEW in MCP v2025‑06‑18
+	// ✅ NEW in MCP v2025-06-18
 	StructuredContent map[string]interface{} `json:"structuredContent,omitempty" yaml:"structuredContent,omitempty" mapstructure:"structuredContent,omitempty"`
 }
 

@@ -8,7 +8,7 @@ type ToolResponse struct {
 	Meta map[string]any `json:"_meta,omitempty" yaml:"_meta,omitempty" mapstructure:"_meta,omitempty"`
 
 	Content []*Content `json:"content" yaml:"content" mapstructure:"content"`
-	// NEW in MCP v2025‑06‑18
+	// NEW in MCP v2025-06-18
 	StructuredContent any `json:"structuredContent,omitempty" yaml:"structuredContent,omitempty" mapstructure:"structuredContent,omitempty"`
 }
 
